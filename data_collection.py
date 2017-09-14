@@ -44,7 +44,7 @@ def keyOutput(keys):
 		output = sa
 	elif s in keys and  d in keys:
 		output = sd
-	else
+	else:
 		output = nk
 
 	return output
@@ -56,6 +56,7 @@ def main(file_name, index):
 		screen = grab_screen(region=(5,30,800, 625))
 		screen = cv2.cvtColor(cv2.resize(screen, (480,270)), cv2.COLOR_BGR2GRAY)
 		keys = key_check()
+		print('Keys', keys)
 		output = keyOutput(keys)
 		training_data.append([screen, output])
 #		cv2.imshow("Test", cv2.cvtColor(screen, cv2.COLOR_BGR2RGB))
@@ -64,7 +65,7 @@ def main(file_name, index):
 #			break
 #	print(training_data)
 		if(len(training_data)%100==0):
-			print(len(training_data))
+#			print(len(training_data))
 			if(len(training_data)%500==0):
 				np.save(file_name, training_data)
 				print('Saved!')
