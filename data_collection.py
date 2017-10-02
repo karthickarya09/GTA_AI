@@ -15,7 +15,7 @@ sa = [0,0,0,0,0,0,1,0,0]
 sd = [0,0,0,0,0,0,0,1,0]
 nk = [0,0,0,0,0,0,0,0,1]
 
-index=83
+index=160
 
 while True:
 	file_name = 'training_data-{}'.format(index);
@@ -30,7 +30,7 @@ while True:
 def keyOutput(keys):
 	output = [0,0,0,0,0,0,0,0]
 	if 'W' in keys and 'D' in keys:
-		output = w
+		output = wd
 	elif 'W' in keys and 'A' in keys:
 		output = wa
 	elif 'S' in keys and 'A' in keys:
@@ -38,7 +38,7 @@ def keyOutput(keys):
 	elif 'S' in keys and  'D' in keys:
 		output = sd
 	elif 'W' in keys:
-		output = wd
+		output = w
 	elif 'A' in keys:
 		output = a
 	elif 'S' in keys:
@@ -71,9 +71,9 @@ def main(file_name, index):
 	#		print(training_data)
 			if(len(training_data)%100==0):
 	#			print(len(training_data))
-				if(len(training_data)%500==0):
+				if(len(training_data)%1000==0):
 					np.save(file_name, training_data)
-					print('Saved!')
+					print('Saved!', index)
 					training_data=[]
 					index += 1
 					file_name = 'training_data-{}'.format(index)
