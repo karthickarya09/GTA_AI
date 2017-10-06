@@ -10,53 +10,28 @@ from keras.models import load_model
 import matplotlib.pyplot as plt
 print("Keras Imported")
 
-FILE_I_END = 20
 
 
-WIDTH = 288
-HEIGHT = 162
-LR = 1e-3
-EPOCHS = 11
-
-ord_1 = [5, 4, 17, 3, 19, 15]
-ord_2 = [11, 6, 10, 9, 13, 16]
-ord_3 = [8, 18, 7]
-order = ord_3
 
 
-def main():
-    base_model = InceptionV3(include_top=False, weights='imagenet', input_shape=(WIDTH, HEIGHT,3))
-    x = base_model.output
-    x = GlobalAveragePooling2D()(x)
-# let's add a fully-connected layer
-    x = Dense(1024, activation='relu')(x)
-    # and a logistic layer -- let's say we have 200 classes
-    predictions = Dense(9, activation='softmax')(x)
+
+
+def train(epoch, order):
+
+    WIDTH = 288
+    HEIGHT = 162
     
     graph_data=[]
-    MODEL_NAME='inception_model_32_1'
-
     # this is the model we will train
-    model = Model(inputs=base_model.input, outputs=predictions)
-    if(MODEL_NAME!=''):
-        model = load_model('{}.h5'.format(MODEL_NAME))
-        print("Model Exists and Loaded")
-    else:
-        # first: train only the top layers (which were randomly initialized)
-        # i.e. freeze all convolutional InceptionV3 layers
-        for layer in base_model.layers:
-            layer.trainable = False
-        print("Started Compiling")
-        sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
-        model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
-        print("Model Compiled")
-
+    model = load_model('inception_model_32_1_1.h5')
+    print("Model Exists and Loaded")
+    # first: train only the top layers (which were randomly initialized)
+    # i.e. freeze all convolutional InceptionV3 layers
     print("Starting Training and Epochs.")
 
     for i in order:
-        if(MODEL_NAME !=''):
-            model = load_model('{}.h5'.format(MODEL_NAME))
-            print("Model Loaded")
+        model = load_model('inception_model_32_1_1.h5')
+        print("Model Loaded")
         print("Dataset-{}".format(i))
         try:
             training_data = []
@@ -102,7 +77,7 @@ def main():
             Y_valid = [i[1] for i in test]
             history = model.fit(X_train, Y_train, batch_size=32, epochs=1, shuffle=True, verbose=1, validation_data=(X_valid, Y_valid))
             X_train=Y_train=X_valid=Y_valid=[]
-            model.save("{}.h5".format(MODEL_NAME))
+            model.save("inception_model_32_1_1.h5")
             if(i!=order[-1]):
                 del model
             acc = history.history['acc'][0]
@@ -116,13 +91,13 @@ def main():
             print(str(ex))
 
     print("Training Complete! Saving Model")
-    model.save("inception_model_32_1.h5")
-    model.save("inception_model_32_14.h5")
+    model.save("inception_model_32_1_1.h5")
+    model.save("inception_model_32_{}.h5".format(epoch))
     del model
 
     x = []
 
-    temp = np.load("graph_info.npy")
+    temp = np.load("graph_info_1.npy")
     print("Graph file LOADED")
     for data in temp:
         x.append(data)
@@ -131,31 +106,6 @@ def main():
         x.append(data)
     graph_data=[]
 
-    print("Generating Graph")
-    acc = [data[0] for data in x]
-    val_acc = [data[1] for data in x]
-    loss = [data[2] for data in x]
-    val_loss = [data[3] for data in x]
-    # print(acc)
-    # print(val_acc)
-    # print(loss)
-    # print(val_loss)
-    plt.plot(acc)
-    plt.plot(val_acc)
-    plt.title('model accuracy')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
-    plt.show()
-    # summarize history for loss
-    plt.plot(loss)
-    plt.plot(val_loss)
-    plt.title('model loss')
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
-    plt.show()
-    np.save("graph_info.npy", x)
+    np.save("graph_info_1.npy", x)
     x = []
     print("Graph Saved")
-main()
