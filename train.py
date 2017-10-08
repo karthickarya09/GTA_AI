@@ -18,9 +18,9 @@ HEIGHT = 162
 LR = 1e-3
 EPOCHS = 11
 
-ord_1 = [5, 4, 17, 3, 19, 15]
-ord_2 = [11, 6, 10, 9, 13, 16]
-ord_3 = [8, 18, 7]
+ord_1 = [8, 17, 4, 15, 6, 19]
+ord_2 = [9, 15, 18, 10, 3, 16]
+ord_3 = [7, 13, 11]
 order = ord_3
 
 
@@ -117,7 +117,7 @@ def main():
 
     print("Training Complete! Saving Model")
     model.save("inception_model_32_1.h5")
-    model.save("inception_model_32_14.h5")
+    model.save("inception_model_32_19.h5")
     del model
 
     x = []
